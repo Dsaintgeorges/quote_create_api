@@ -3,18 +3,19 @@ const fs = require('fs');
 const carbone = require('carbone');
 const app = express();
 const cors = require('cors');
-const {response} = require("express");
 const queries = require('./queries');
+const auth = require('./auth');
 
 app.use(express.json());
 app.use(cors());
+process.env.SECRET_KEY = 'secret';
 app.listen(8080,()=>{
     console.log("Voici l'api")
 })
+carbone.set({ converterFactoryTimeout: 600000 })
 
 
-
-app.post('/createQuote',(req,res)=>{
+app.post('/createQuote',auth,(req,res)=>{
     docCreate(req)
     res.status(200).send();
 })
@@ -34,7 +35,6 @@ const docCreate = (req)=>{
         }
         // write the result
         fs.writeFileSync('./result.pdf', result);
-        process.exit();
     });
 }
 

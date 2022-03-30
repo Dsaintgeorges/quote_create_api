@@ -1,11 +1,11 @@
-// setup postgresql configuration
 const Pool = require('pg').Pool;
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const client = new Pool({
-    user: 'doryan',
-    host: 'localhost',
-    database: 'quote',
-    password: 'MonDxwnkl88',
+    user: 'postgres',
+    host: 'host.docker.internal',
+    database: 'postgres',
+    password: 'docker',
     port: 5432,
 });
 
@@ -25,16 +25,15 @@ const createUser = (request, response) => {
     } = request.body;
     const hash = bcrypt.hashSync(request.body.password, 10);
     client.query('INSERT INTO users (username, password, email, firstname, lastname, phone, address, city, state, zipcode,vatnumber) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,$11)',
-        [username, hash, email, firstname, lastname, phone, address, city, state, zipcode,vatnumber], (error, results) => {
-        if (error) {
-            throw error;
-        }
-            console.log(results,"results")
-        response.status(201).send(`User added`);
-    });
+        [username, hash, email, firstname, lastname, phone, address, city, state, zipcode, vatnumber], (error, results) => {
+            if (error) {
+                throw error;
+            }
+            console.log(results, "results")
+            response.status(201).send(`User added`);
+        });
 };
 
-/*create login method with bcrypt password*/
 const login = (request, response) => {
     const {
         email,
@@ -47,18 +46,22 @@ const login = (request, response) => {
         if (results.rows.length === 0) {
             response.status(401).send('User not found');
         } else {
+            console.log(results.rows, "rows result");
             const valid = bcrypt.compareSync(password, results.rows[0].password);
             if (valid) {
-                response.status(200).send(`${results.rows[0].username}`);
+                // create a token
+                const token = jwt.sign({
+                    email: email,
+                }, 'secret', {
+                    expiresIn: '1h'
+                });
+                response.status(200).send({user: results.rows[0], token: token});
             } else {
                 response.status(401).send('Invalid password');
             }
         }
     });
 };
-
-
-
 module.exports = {
     createUser,
     login
