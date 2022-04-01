@@ -3,14 +3,13 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const client = new Pool({
     user: 'postgres',
-    host: 'host.docker.internal',
+    host: 'db',
     database: 'postgres',
     password: 'docker',
     port: 5432,
 });
 
 const createUser = (request, response) => {
-    console.log("register,request.body", request.body);
     const {
         username,
         email,
@@ -27,7 +26,7 @@ const createUser = (request, response) => {
     client.query('INSERT INTO users (username, password, email, firstname, lastname, phone, address, city, state, zipcode,vatnumber) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,$11)',
         [username, hash, email, firstname, lastname, phone, address, city, state, zipcode, vatnumber], (error, results) => {
             if (error) {
-                throw error;
+                throw error
             }
             console.log(results, "results")
             response.status(201).send(`User added`);
@@ -41,7 +40,7 @@ const login = (request, response) => {
     } = request.body;
     client.query('SELECT * FROM users WHERE email = $1', [email], (error, results) => {
         if (error) {
-            throw error;
+            throw error
         }
         if (results.rows.length === 0) {
             response.status(401).send('User not found');

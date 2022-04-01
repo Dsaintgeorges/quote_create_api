@@ -1,0 +1,22 @@
+#!/bin/bash
+set -e
+
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+    CREATE USER postgres;
+    CREATE DATABASE postgres;
+    GRANT ALL PRIVILEGES ON DATABASE postgres TO postgres;
+    CREATE TABLE users(
+ id SERIAL PRIMARY KEY,
+ username VARCHAR(255) NOT NULL,
+ password VARCHAR(255) NOT NULL,
+ email VARCHAR(255) NOT NULL UNIQUE,
+ firstname VARCHAR(255) NOT NULL,
+ lastname VARCHAR(255) NOT NULL,
+ phone VARCHAR(255) NOT NULL,
+ address VARCHAR(255) NOT NULL,
+ city VARCHAR(255) NOT NULL,
+ state VARCHAR(255) NOT NULL,
+ zipcode VARCHAR(255) NOT NULL,
+ vatnumber VARCHAR(255) NOT NULL UNIQUE
+);
+EOSQL
