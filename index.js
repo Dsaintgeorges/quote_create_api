@@ -2,10 +2,15 @@ const express = require('express')
 const fs = require('fs');
 const carbone = require('carbone');
 const app = express();
-const cors = require('cors');
 const queries = require('./queries');
-const auth = require('./auth');
+const aws = require('./aws');
 
+const AWS = require('aws-sdk');
+
+const auth = require('./auth');
+const cors = require('cors');
+// Set the Region
+AWS.config.update({region: 'eu-west-3'});
 app.use(express.json());
 app.use(cors());
 process.env.SECRET_KEY = 'secret';
@@ -35,9 +40,11 @@ const docCreate = (req)=>{
         }
         // write the result
         fs.writeFileSync('./result.pdf', result);
+        aws.uploadFile(result)
     });
 }
 
 app.post('/createUser',queries.createUser);
 app.post('/login',queries.login);
+app.get('/getObject',aws.getFile)
 
