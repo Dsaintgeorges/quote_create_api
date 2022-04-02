@@ -21,13 +21,13 @@ const getFile = async (fileName) => {
         Bucket: awsConfig.getBucketName(),
         Key: fileName
     };
-    awsConfig.s3.getSignedUrl('getObject',params, function (err, data) {
+    awsConfig.s3.getObject(params, function (err, data) {
         if (err) {
             console.log(err);
             throw err;
         }
         console.log(data,"data");
-       return data.Body;
+       return data;
     });
 };
 
