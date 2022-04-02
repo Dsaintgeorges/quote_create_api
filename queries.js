@@ -1,7 +1,7 @@
 const Pool = require('pg').Pool;
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const client = require('../config/db');
+const client = require('../config/dbconfig');
 
 const createUser = (request, response) => {
     const {
