@@ -26,6 +26,7 @@ const getFile = async (fileName) => {
             console.log(err);
             throw err;
         }
+        console.log(data,"data");
        return data.Body;
     });
 };

@@ -11,6 +11,7 @@ const getPdf = async (req, res, next) => {
         const file = await aws.getFile(req.query.filename);
         res.sendFile(file);
     } catch (e) {
+        console.log(e);
         res.sendStatus(500);
     }
 }
