@@ -9,6 +9,8 @@ const AWS = require('aws-sdk');
 
 const auth = require('./auth');
 const cors = require('cors');
+const awsController = require("./controller/awsController");
+const awsService = require("./services/awsService");
 // Set the Region
 AWS.config.update({region: 'eu-west-3'});
 app.use(express.json());
@@ -40,11 +42,13 @@ const docCreate = (req)=>{
         }
         // write the result
         fs.writeFileSync('./result.pdf', result);
-        aws.uploadFile(result)
+        awsService.uploadFile(result,req.body.userId)
     });
 }
 
 app.post('/createUser',queries.createUser);
 app.post('/login',queries.login);
-app.get('/getObject',aws.getFile)
+app.get('/get-all-pdf',awsController.getAllPdf);
+app.post('save-file',awsController.uploadFile);
+app.get('/get-file',awsController.getPdf);
 
