@@ -9,7 +9,7 @@ const getAllPdf = async (req, res, next) => {
 const getPdf = async (req, res, next) => {
     try {
         const file = await aws.getFile(req.query.filename);
-        res.sendFile(file,{root:__dirname});
+        res.send(file);
     } catch (e) {
         console.log(e);
         res.sendStatus(500);
