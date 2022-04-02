@@ -1,23 +1,25 @@
 const aws = require("../services/awsService");
-const getAllPdf = async (req,res,next)=>{
-    try{
-    res.json(await aws.getAllPdf(req.query.userId));
-    }catch (e) {
-        next(e);
+const getAllPdf = async (req, res, next) => {
+    try {
+        res.json(await aws.getAllPdf(req.query.userId));
+    } catch (e) {
+        res.sendStatus(500);
     }
 }
-const getPdf = async (req,res,next)=>{
-    try{
-        res.sendFile(await aws.getFile(req.query.filename));
-    }catch (e) {
-        next(e);
+const getPdf = async (req, res, next) => {
+    try {
+        const file = await aws.getFile(req.query.filename);
+        res.sendFile(file);
+    } catch (e) {
+        res.sendStatus(500);
     }
 }
-const uploadFile = async(req,res,next)=>{
-    try{
-        res.json(await aws.uploadFile(req));
-    }catch (e) {
-        next(e);
+const uploadFile = async (req, res, next) => {
+    try {
+        const response = await aws.uploadFile(req);
+        res.json(response);
+    } catch (e) {
+        res.sendStatus(500);
     }
 }
 module.exports = {

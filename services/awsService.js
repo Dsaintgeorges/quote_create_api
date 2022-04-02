@@ -34,7 +34,6 @@ const uploadFile = async (file,userId) => {
     // Read content from the file
     const fileContent = file;
     const fileName = crypto.randomBytes(16).toString("hex");
-    ;
 
     // Setting up S3 upload parameters
     const params = {

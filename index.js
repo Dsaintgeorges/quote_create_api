@@ -23,8 +23,13 @@ carbone.set({ converterFactoryTimeout: 600000 })
 
 
 app.post('/createQuote',auth,(req,res)=>{
-    docCreate(req)
-    res.status(200).send();
+   try{
+       docCreate(req)
+       res.status(200).send();
+   }catch (e){
+      res.sendStatus(500).send();
+   }
+
 })
 
 app.get('/result',(req,res)=>{
@@ -35,10 +40,10 @@ let option={
     convertTo: 'pdf'
 }
 
-const docCreate = (req)=>{
+const docCreate =(req)=>{
     carbone.render('assets/quote.odt', req.body,option,(err, result)=>{
         if (err) {
-            return console.log(err);
+            throw err;
         }
         // write the result
         fs.writeFileSync('./result.pdf', result);
