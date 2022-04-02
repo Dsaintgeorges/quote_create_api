@@ -6,6 +6,9 @@ const SECRET = 'LGuYnH+vEE3IfT1sZBNGP/MDqy1GUCqP0/rYbF7W';
 // The name of the bucket that you have created
 const BUCKET_NAME = 'quotecreator';
 
+const getBucketName = () => {
+    return BUCKET_NAME;
+}
 const s3 = new AWS.S3({
     accessKeyId: ID,
     secretAccessKey: SECRET,
@@ -22,5 +25,6 @@ const params = {
 module.exports = {
     s3,
     params,
-    BUCKET_NAME
+    BUCKET_NAME,
+    getBucketName
 };

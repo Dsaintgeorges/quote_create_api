@@ -1,22 +1,24 @@
 const client = require('../config/dbconfig');
 const fs = require("fs");
-const {awsConfig} = require('../config/awsConfig');
+const awsConfig = require('../config/awsConfig');
 const crypto = require("crypto");
 
 const getAllPdf = async (userId) => {
-
+    console.log(userId)
     const result = await client.query('select * from users_document t WHERE t.user_id = $1', [userId]);
     return result.rows;
 }
 
 const saveFile = async (fileName, userId) => {
-    const result = await client.query('INSERT INTO users_document (file_name,user_id) VALUES ($1,$2)', [fileName, userId]);
+    console.log(fileName)
+    console.log(userId)
+    const result = await client.query('INSERT INTO users_document (document_id,user_id) VALUES ($1,$2)', [fileName, userId]);
     return result;
 }
 
 const getFile = async (fileName) => {
     const params = {
-        Bucket: awsConfig.BUCKET_NAME,
+        Bucket: awsConfig.getBucketName(),
         Key: fileName
     };
     awsConfig.s3.getObject(params, function (err, data) {
