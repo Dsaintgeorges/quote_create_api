@@ -1,13 +1,7 @@
 const Pool = require('pg').Pool;
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const client = new Pool({
-    user: 'postgres',
-    host: 'db',
-    database: 'postgres',
-    password: 'docker',
-    port: 5432,
-});
+const client = require('../config/db');
 
 const createUser = (request, response) => {
     const {
@@ -28,7 +22,6 @@ const createUser = (request, response) => {
             if (error) {
                 throw error
             }
-            console.log(results, "results")
             response.status(201).send(`User added`);
         });
 };
