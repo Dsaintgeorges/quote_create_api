@@ -22,19 +22,9 @@ app.listen(8080,()=>{
 carbone.set({ converterFactoryTimeout: 600000 })
 
 
-app.post('/createQuote',auth,(req,res)=>{
-   try{
-       docCreate(req)
-       res.status(200).send();
-   }catch (e){
-      res.sendStatus(500).send();
-   }
 
-})
 
-app.get('/result',(req,res)=>{
-    res.sendFile('result.pdf',{root:__dirname})
-})
+
 
 let option={
     convertTo: 'pdf'
@@ -51,6 +41,21 @@ const docCreate =(req)=>{
     });
 }
 
+
+app.post('/createQuote',auth,(req,res)=>{
+    try{
+        docCreate(req)
+        res.json({
+            message:"ok"
+        })
+    }catch (e){
+        res.sendStatus(500).send();
+    }
+
+})
+app.get('/result',(req,res)=>{
+    res.sendFile('result.pdf',{root:__dirname})
+})
 app.post('/createUser',queries.createUser);
 app.post('/login',queries.login);
 app.get('/get-all-pdf',awsController.getAllPdf);
