@@ -21,14 +21,17 @@ const getFile = async (fileName) => {
         Bucket: awsConfig.getBucketName(),
         Key: fileName
     };
+    let datas ;
+
     awsConfig.s3.getObject(params, function (err, data) {
         if (err) {
             console.log(err);
             throw err;
         }
-        console.log(data,"data");
-       return data.Body;
+       datas = data.Body;
     });
+    console.log(datas,"datas");
+    return datas;
 };
 
 const uploadFile = async (file,userId) => {

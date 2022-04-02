@@ -1,4 +1,5 @@
 const aws = require("../services/awsService");
+const awsConfig = require("../config/awsConfig");
 const getAllPdf = async (req, res, next) => {
     try {
         res.json(await aws.getAllPdf(req.query.userId));
@@ -7,9 +8,19 @@ const getAllPdf = async (req, res, next) => {
     }
 }
 const getPdf = async (req, res, next) => {
+
     try {
-        const file = await aws.getFile(req.query.filename);
-        res.send(file);
+        const params = {
+            Bucket: awsConfig.getBucketName(),
+            Key: req.query.filename
+        };
+    awsConfig.s3.getObject(params, function (err, data) {
+        if (err) {
+            console.log(err);
+            throw err;
+        }
+        res.send(data.Body);
+    });
     } catch (e) {
         console.log(e);
         res.sendStatus(500);
