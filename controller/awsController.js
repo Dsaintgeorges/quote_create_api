@@ -1,8 +1,16 @@
 const aws = require("../services/awsService");
 const awsConfig = require("../config/awsConfig");
+const multer = require("multer");
 const getAllPdf = async (req, res, next) => {
     try {
         res.json(await aws.getAllPdf(req.query.userId));
+    } catch (e) {
+        res.sendStatus(500);
+    }
+}
+const getAllTemplates = async (req, res, next) => {
+    try {
+        res.json(await aws.getAllTemplates(req.query.userId));
     } catch (e) {
         res.sendStatus(500);
     }
@@ -17,7 +25,23 @@ const getPdf = async (req, res, next) => {
     awsConfig.s3.getObject(params, function (err, data) {
         if (err) {
             console.log(err);
-            throw err;
+        }
+        res.send(data.Body);
+    });
+    } catch (e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+}
+const getTemplate = async (req, res, next) => {
+    try {
+        const params = {
+            Bucket: awsConfig.getTemplateBucket(),
+            Key: req.query.filename
+        };
+    awsConfig.s3.getObject(params, function (err, data) {
+        if (err) {
+            console.log(err);
         }
         res.send(data.Body);
     });
@@ -34,8 +58,30 @@ const uploadFile = async (req, res, next) => {
         res.sendStatus(500);
     }
 }
+const uploadTemplate = async (req, res, next) => {
+    try {
+        const response = await aws.uploadTemplate(req.file,req.body.userId,req.body.name);
+        res.json(response);
+    } catch (e) {
+        console.log(e,"error");
+        res.sendStatus(500);
+    }
+}
+const setDefaultTemplate = async (req, res, next) => {
+    try {
+        const response = await aws.setDefaultTemplate(req.query.templateId);
+        res.json(response);
+    } catch (e) {
+        console.log(e,"error");
+        res.sendStatus(500);
+    }
+}
 module.exports = {
     getAllPdf,
     getPdf,
-    uploadFile
+    uploadFile,
+    getTemplate,
+    getAllTemplates,
+    uploadTemplate,
+    setDefaultTemplate
 }

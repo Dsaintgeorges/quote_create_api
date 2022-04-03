@@ -4,13 +4,14 @@ const carbone = require('carbone');
 const app = express();
 const queries = require('./queries');
 const aws = require('./aws');
-
 const AWS = require('aws-sdk');
+const multer = require('multer');
 
 const auth = require('./auth');
 const cors = require('cors');
 const awsController = require("./controller/awsController");
 const awsService = require("./services/awsService");
+
 // Set the Region
 AWS.config.update({region: 'eu-west-3'});
 app.use(express.json());
@@ -59,6 +60,9 @@ app.get('/result',(req,res)=>{
 app.post('/createUser',queries.createUser);
 app.post('/login',queries.login);
 app.get('/get-all-pdf',awsController.getAllPdf);
-app.post('save-file',awsController.uploadFile);
+app.post('/save-file',awsController.uploadFile);
 app.get('/get-file',awsController.getPdf);
-
+app.post('/upload-template',multer().single('file'),awsController.uploadTemplate);
+app.get('/get-templates',awsController.getAllTemplates);
+app.get('/download-template',awsController.getTemplate);
+app.post('/set-default-template',awsController.setDefaultTemplate);
