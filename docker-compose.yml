@@ -21,7 +21,8 @@ services:
             - /opt/data/volumes/pgdata:/var/lib/postgresql/data
             - /opt/data/quote_create_api/postgresinit.sh:/docker-entrypoint-initdb.d/init-user-db.sh
     angular:
-            container_name: angular_front
-            image: 'angular'
-            ports:
-                - '4200:4200'
+        container_name: angular_front
+        image: 'angular'
+        ports:
+            - '80:80'
+    

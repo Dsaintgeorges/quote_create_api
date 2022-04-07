@@ -1,4 +1,4 @@
-FROM ideolys/carbone-env-docker
+FROM carbone
 WORKDIR /home/node/app
 COPY package*.json ./
 RUN npm install
