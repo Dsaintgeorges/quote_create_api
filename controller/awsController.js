@@ -69,7 +69,7 @@ const uploadTemplate = async (req, res, next) => {
 }
 const setDefaultTemplate = async (req, res, next) => {
     try {
-        const response = await aws.setDefaultTemplate(req.query.templateId);
+        const response = await aws.setDefaultTemplate(req.query.templateId,req.query.userId);
         res.json(response);
     } catch (e) {
         console.log(e,"error");

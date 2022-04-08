@@ -32,20 +32,16 @@ const getFile = async (fileName) => {
         Bucket: awsConfig.getBucketName(),
         Key: fileName
     };
-    let datas ;
-
     awsConfig.s3.getObject(params, function (err, data) {
         if (err) {
             console.log(err);
             throw err;
         }
-       datas = data.Body;
+        return data.Body;
     });
-    console.log(datas,"datas");
-    return datas;
 };
-const uploadFile = async (file,userId) => {
-    console.log(file,"je suis le file")
+const uploadFile = async (file, userId) => {
+    console.log(file, "je suis le file")
     // Read content from the file
     const fileContent = file;
     const fileName = crypto.randomBytes(16).toString("hex");
@@ -63,16 +59,16 @@ const uploadFile = async (file,userId) => {
             console.log(err);
             throw err;
         }
-        saveFile(fileName,userId);
+        saveFile(fileName, userId);
     });
 };
 
-const uploadTemplate = async (file,userId,name) => {
+const uploadTemplate = async (file, userId, name) => {
     // Read content from the file
-    console.log(name,"name")
-    console.log(file,"file")
+    console.log(name, "name")
+    console.log(file, "file")
     const fileContent = file;
-    const fileName = name+path.parse(file.originalname).ext;
+    const fileName = name + path.parse(file.originalname).ext;
 
     // Setting up S3 upload parameters
     const params = {
@@ -84,22 +80,54 @@ const uploadTemplate = async (file,userId,name) => {
     // Uploading files to the bucket
     awsConfig.s3.upload(params, function (err, data) {
         if (err) {
-            console.log(err,"errrrrrrrr");
+            console.log(err, "errrrrrrrr");
         }
-        saveTemplate(fileName,userId);
+        saveTemplate(fileName, userId);
     });
 };
-setDefaultTemplate = async (templateId) => {
+const setDefaultTemplate = async (templateId,userId) => {
     // update users_templates to set is_default = true
-    console.log(templateId,"templateId");
-    const result1 = await client.query('UPDATE users_templates SET is_default = false WHERE is_default = true');
-    const result = await client.query('UPDATE users_templates SET is_default = true WHERE id = $1', [templateId]);
-    return result;
+    const result1 = new Promise((resolve,reject)=>{
+        resolve(client.query('UPDATE users_templates SET is_default = false WHERE is_default = true and user_id = $1', [userId]))
+    }).then(
+        ()=>{
+            const result = client
+                .query('UPDATE users_templates SET is_default = true WHERE id = $1 and user_id = $2', [templateId,userId]);
+            return result;
+        }
+    )
 }
-getDefaultTemplate = async (userId) => {
+const getDefaultTemplate = async (userId) => {
+    let datas;
     const result = await client.query('select * from users_templates t WHERE t.user_id = $1 AND t.is_default = true', [userId]);
-    return result.rows;
+    if (result.rowCount > 0) {
+        datas = result.rows[0];
+        const params = {
+            Bucket: awsConfig.getTemplateBucket(),
+            Key: datas.name
+        };
+        const data = await awsConfig.s3.getObject(params).promise();
+        return data.Body;
+    }else{
+       throw new Error("No default template found");
+    }
+
+
 }
+/*const getDefaultTemplate = new Promise((resolve, reject) => {
+    const result = client.query('select * from users_templates t WHERE t.user_id = $1 AND t.is_default = true', [userId]);
+    const params = {
+        Bucket: awsConfig.getTemplateBucket(),
+        Key: result.rows[0].name
+    };
+    awsConfig.s3.getObject(params, function (err, data) {
+        if (err) {
+            console.log(err);
+            throw err;
+        }
+        resolve(data.Body);
+    });
+});*/
 
 
 module.exports = {
@@ -109,5 +137,6 @@ module.exports = {
     uploadFile,
     uploadTemplate,
     getAllTemplates,
-    setDefaultTemplate
+    setDefaultTemplate,
+    getDefaultTemplate
 }

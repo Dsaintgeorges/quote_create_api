@@ -6,6 +6,7 @@ const queries = require('./queries');
 const aws = require('./aws');
 const AWS = require('aws-sdk');
 const multer = require('multer');
+const quoteRenderController = require('./controller/quoteRenderController');
 
 const auth = require('./auth');
 const cors = require('cors');
@@ -31,29 +32,7 @@ let option={
     convertTo: 'pdf'
 }
 
-const docCreate =(req)=>{
-    carbone.render('assets/quote.odt', req.body,option,(err, result)=>{
-        if (err) {
-            throw err;
-        }
-        // write the result
-        fs.writeFileSync('./result.pdf', result);
-        awsService.uploadFile(result,req.body.userId)
-    });
-}
-
-
-app.post('/createQuote',auth,(req,res)=>{
-    try{
-        docCreate(req)
-        res.json({
-            message:"ok"
-        })
-    }catch (e){
-        res.sendStatus(500).send();
-    }
-
-})
+app.post('/createQuote',quoteRenderController.docCreate);
 app.get('/result',(req,res)=>{
     res.sendFile('result.pdf',{root:__dirname})
 })
