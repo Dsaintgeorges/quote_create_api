@@ -100,15 +100,17 @@ const setDefaultTemplate = async (templateId,userId) => {
 }
 const getDefaultTemplate = async (userId) => {
     let datas;
+    let extension;
     const result = await client.query('select * from users_templates t WHERE t.user_id = $1 AND t.is_default = true', [userId]);
     if (result.rowCount > 0) {
+        extension = result.rows[0].name.split('.').pop();
         datas = result.rows[0];
         const params = {
             Bucket: awsConfig.getTemplateBucket(),
             Key: datas.name
         };
         const data = await awsConfig.s3.getObject(params).promise();
-        return data.Body;
+        return {body:data.Body,ext:extension};
     }else{
        throw new Error("No default template found");
     }

@@ -13,14 +13,13 @@ let option = {
 
 const docCreate = async (req) => {
     return new Promise(async (resolve,reject)=>{
-        console.log(req.body,"body de l'upload")
         const fileName = req.body.client.name + req.body.date;
 
          await aws.getDefaultTemplate(req.body.userId).then(
              (data) => {
-                    fs.writeFileSync("./temp/template.odt", data);
+                    fs.writeFileSync("./temp/template."+data.ext, data.body);
 
-                    carbone.render("./temp/template.odt", req.body, option,
+                    carbone.render("./temp/template."+data.ext, req.body, option,
                         async (err, result) => {
                             if (err) {
                                 throw err;
