@@ -15,7 +15,7 @@ const getAllTemplates = async (userId) => {
 }
 
 const saveFile = async (fileName, userId) => {
-    console.log(fileName)
+    console.log(fileName,"de l'upload")
     console.log(userId)
     const result = await client.query('INSERT INTO users_document (document_id,user_id) VALUES ($1,$2)', [fileName, userId]);
     return result;
@@ -40,11 +40,12 @@ const getFile = async (fileName) => {
         return data.Body;
     });
 };
-const uploadFile = async (file, userId) => {
+const uploadFile = async (file, userId,filename) => {
     console.log(file, "je suis le file")
     // Read content from the file
+
     const fileContent = file;
-    const fileName = crypto.randomBytes(16).toString("hex");
+    const fileName = filename;
 
     // Setting up S3 upload parameters
     const params = {

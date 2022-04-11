@@ -2,6 +2,7 @@ const quoteService = require("../services/quoteRenderService");
 
 
 const docCreate = async (req,res) => {
+    console.log("je rentre dans le controller");
     let resultat ;
          await new Promise((resolve,reject)=>{
            quoteService.docCreate(req).then(result => {
