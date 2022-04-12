@@ -45,3 +45,5 @@ app.post('/upload-template',multer().single('file'),awsController.uploadTemplate
 app.get('/get-templates',awsController.getAllTemplates);
 app.get('/download-template',awsController.getTemplate);
 app.post('/set-default-template',awsController.setDefaultTemplate);
+app.get('/is-default-template',awsController.isUserHaveDefaultTemplate);
+app.get('/download-default-template',awsController.downloadDefaultTemplate);

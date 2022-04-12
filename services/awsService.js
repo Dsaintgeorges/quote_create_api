@@ -117,6 +117,13 @@ const getDefaultTemplate = async (userId) => {
 
 
 }
+
+const isUserHaveDefaultTemplate = (userId)=>{
+    const response = client.query('select * from users_templates t WHERE t.user_id = $1 ', [userId]);
+    return response.rowCount > 0;
+}
+
+
 /*const getDefaultTemplate = new Promise((resolve, reject) => {
     const result = client.query('select * from users_templates t WHERE t.user_id = $1 AND t.is_default = true', [userId]);
     const params = {
@@ -141,5 +148,6 @@ module.exports = {
     uploadTemplate,
     getAllTemplates,
     setDefaultTemplate,
-    getDefaultTemplate
+    getDefaultTemplate,
+    isUserHaveDefaultTemplate
 }
