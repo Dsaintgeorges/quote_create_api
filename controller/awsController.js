@@ -78,9 +78,10 @@ const setDefaultTemplate = async (req, res, next) => {
     }
 }
 
-const isUserHaveDefaultTemplate = (req, res) => {
+const isUserHaveDefaultTemplate = async (req, res) => {
     try {
-        res.json(aws.isUserHaveDefaultTemplate(req.query.userId));
+        const response = await aws.isUserHaveDefaultTemplate(req.query.userId);
+        res.json(response);
     } catch (e) {
         res.sendStatus(500);
     }

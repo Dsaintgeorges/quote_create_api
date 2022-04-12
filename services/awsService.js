@@ -118,8 +118,10 @@ const getDefaultTemplate = async (userId) => {
 
 }
 
-const isUserHaveDefaultTemplate = (userId)=>{
-    const response = client.query('select * from users_templates t WHERE t.user_id = $1 ', [userId]);
+const isUserHaveDefaultTemplate = async (userId)=>{
+    console.log(userId);
+    const response = await client.query('select * from users_templates t WHERE t.user_id = $1 ', [userId]);
+    console.log(response.rowCount>0)
     return response.rowCount > 0;
 }
 
