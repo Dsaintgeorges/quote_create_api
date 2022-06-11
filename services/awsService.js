@@ -10,7 +10,7 @@ const getAllPdf = async (userId) => {
     return result.rows;
 }
 const getAllTemplates = async (userId) => {
-    const result = await client.query('select * from users_templates t WHERE t.user_id = $1 ORDER BY t.is_default ASC', [userId]);
+    const result = await client.query('select * from users_templates t WHERE t.user_id = $1 ORDER BY t.is_default DESC', [userId]);
     return result.rows;
 }
 
