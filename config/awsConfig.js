@@ -1,11 +1,11 @@
 const AWS = require("aws-sdk");
 
-const ID = 'AKIAUC3AFMY4QSZGJNXL';
-const SECRET = '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';
+const ID = process.env.ID;
+const SECRET = process.env.SECRET;
 
 // The name of the bucket that you have created
-const BUCKET_NAME = 'quotecreator';
-const BUCKET_TEMPLATE = 'quote-template';
+const BUCKET_NAME = 'quote-pdf';
+const BUCKET_TEMPLATE = 'template-quote';
 
 const getBucketName = () => {
     return BUCKET_NAME;
